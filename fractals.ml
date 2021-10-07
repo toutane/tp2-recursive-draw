@@ -8,7 +8,7 @@ open Graphics ;;
 (* Show the graphics window *)
 open_graph " 800x600" ;;
 
-(* draw_line function draw a line from point (x, y) to point (z, t) *)
+(* draw_line function draws a line from point (x, y) to point (z, t) *)
 
 let draw_line (x, y) (z, t) =
   set_line_width 1 ;
@@ -18,7 +18,7 @@ let draw_line (x, y) (z, t) =
 ;;
 
 
-(* 2.1.1 mountain function draw a mountain of n sides from point p1 to point p2 *)
+(* 2.1.1 mountain function draws a mountain of n sides from point p1 to point p2 *)
 
 let mountain n p1 p2 =
   clear_graph() ;
@@ -36,10 +36,10 @@ let mountain n p1 p2 =
   in draw_mountain n p1 p2
 ;;
 
-mountain 8 (100, 200) (700, 200) ;;
+mountain 10 (100, 200) (700, 200) ;;
 
 
-(* 2.1.2 dragon function draw a dragon *)
+(* 2.1.2 dragon function draws a dragon *)
 
 let dragon n p1 p2 =
   clear_graph() ;
@@ -58,6 +58,8 @@ let dragon n p1 p2 =
 
 dragon 19 (150 ,150) (350 ,350) ;;
 
+
+(* 2.2.1 sierpinski_sponge function draws a sponge of sierpinski *)
 
 let sierpinski_sponge (x, y) n =
   clear_graph() ;
@@ -87,3 +89,30 @@ let sierpinski_sponge (x, y) n =
 ;;
 
 sierpinski_sponge (50, 50) 500 ;;
+
+
+(* sierpinski_triangle function draws a triangle of sierpinski *)
+
+let sierpinski_triangle n (x1, y1) (x2, y2) (x3, y3) =
+  clear_graph() ;
+  let rec draw_triangle c (x1, y1) (x2, y2) (x3, y3) =
+    let x_mid = (x2 - x1) / 2 + x1 and y_mid = (y3 - y1) / 2 + y1
+    in if c = n then (
+         set_color black ;
+         fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
+         set_color white ;
+         fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|]
+       )
+       else (
+         set_color black ;
+         fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
+         set_color white ;
+         fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|] ;
+         draw_triangle (c + 1) (x1, y1) (x_mid, y1) ((x_mid - x1) / 2 + x1, y_mid) ;
+         draw_triangle (c + 1) (x_mid, y1) (x2, y2) ((x2 - x_mid) / 2 + x_mid, y_mid) ;
+         draw_triangle (c + 1) ((x_mid - x1) / 2 + x1, y_mid) ((x2 - x_mid) / 2 + x_mid, y_mid) (x3, y3)
+       )
+     in draw_triangle 1 (x1, y1) (x2, y2) (x3, y3)
+;;
+
+sierpinski_triangle 6 (100, 50) (500, 50) (300, 346) ;;
