@@ -6,9 +6,11 @@ Random.init 1 ;;
 (* Load Graphics module on OSX with ocaml 4.0.2*)
 #load "graphics.cma"
 
-  (* Load Greaphics module on Linux with ocaml 4.12 *)
+(* Load Greaphics module on Linux with ocaml 4.12 *)
 #use "topfind" ;;
 #require "graphics" ;;
+
+(* Open Graphics library *)
 open Graphics ;;
 
 (* Show the graphics window *)
