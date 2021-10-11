@@ -2,7 +2,13 @@
 Random.init 1 ;;
 
 (* Load the Graphics library *)
+
+(* Load Graphics module on OSX with ocaml 4.0.2*)
 #load "graphics.cma"
+
+  (* Load Greaphics module on Linux with ocaml 4.12 *)
+#use "topfind" ;;
+#require "graphics" ;;
 open Graphics ;;
 
 (* Show the graphics window *)
@@ -115,4 +121,4 @@ let sierpinski_triangle n (x1, y1) (x2, y2) (x3, y3) =
      in draw_triangle 1 (x1, y1) (x2, y2) (x3, y3)
 ;;
 
-sierpinski_triangle 6 (100, 50) (500, 50) (300, 346) ;;
+sierpinski_triangle 5 (100, 50) (500, 50) (300, 346) ;;
