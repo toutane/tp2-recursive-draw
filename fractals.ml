@@ -7,8 +7,8 @@ Random.init 1 ;;
 #load "graphics.cma"
 
 (* Load Graphics module on Linux with ocaml 4.12 *)
-#use "topfind" ;;
-#require "graphics" ;;
+(* #use "topfind" ;;
+#require "graphics" ;; *)
 open Graphics ;;
 
 (* Show the graphics window *)
@@ -154,11 +154,11 @@ let fleche (ox, oy) rad n direction =
     else (
       fill_circle x y rad ;
       let new_rad = rad / 2
-      and coords_left = ((x - rand) - new_rad, y)
-      and coords_right = ((x + rad) + new_rad, y)
-      and coords_up = (x, ((y + rad) + new_rad))
-      and coords_down = (x, ((y - rad) - new_rad))
-      in match direction with
+      in let coords_left = ((x - rad) - new_rad, y)
+             and coords_right = ((x + rad) + new_rad, y)
+             and coords_up = (x, ((y + rad) + new_rad))
+             and coords_down = (x, ((y - rad) - new_rad))
+         in match direction with
            "up" -> (
            repeat_draw coords_left new_rad "left" ;
            repeat_draw coords_right new_rad "right";
