@@ -1,0 +1,8 @@
+Dans le readme :
+	Faire quelques lignes seulement
+	Donner son resenti sur le tp 
+	Indiquer si l'on a fait des bonuses (ne pas plus detailler que ca...
+	Indiquer si dans les bonuses on a rajouter des parametres etc
+	Pour les fonctions qui ne sont pas en bonus, faire uniquement ce qui est demande
+	Enlever ou commenter les tests (comme les appels de nos fonctions par exemple
+	Ne pas trop faire de commentaires
