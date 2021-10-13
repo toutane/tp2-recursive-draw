@@ -17,8 +17,8 @@ open_graph " 300x300" ;;
 (* draw_line function draws a line from point (x, y) to point (z, t) *)
 
 let draw_line (x, y) (z, t) =
-  set_line_width 1 ;
-  set_color black ;
+  (*set_line_width 1 ;*)
+  (*set_color black ;*)
   moveto x y ;
   lineto z t
 ;;
@@ -188,9 +188,44 @@ fleche (200, 200) 50 1 "up" ;;
 
 (* 2.3.3 koch_curve is a recursive function that draws a curve of von Koch of length d and order n. *)
 
-let koch_curve d =
+
+let koch_curve (x, y) d n =
   clear_graph() ;
-  draw_line (100, 200) (100 + d, 200)
+  let rec recursive_draw (x0, y0) (x1, y1) d n =
+    let h = ((sqrt 3.) /. 2.) *. (float_of_int d) /. 3.
+    in match n with
+         n when n < 0 -> invalid_arg "koch_curve: n must be positive."
+       | 0 -> (
+         set_color black ;
+         draw_line (x0, y0) (x1, y1) ;
+         set_color white ;
+         draw_line (x0 + d / 3, y0) (x0 + 2 * d / 3, y0) ;
+         set_color black ;
+         draw_line (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h);
+         draw_line (x0 + d / 2, y0 + int_of_float h) (x0 + 2 * d / 3, y0)
+       )
+       | n -> (
+         set_color black ;
+         draw_line (x0, y0) (x1, y1);
+         set_color blue ;
+         if y0 = y1 then (
+           draw_line (x0 + d / 3, y0) (x0 + 2 * d / 3, y1) ;
+           set_color black ;
+           draw_line (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h) ;
+           draw_line (x0 + d / 2, y0 + int_of_float h) (x0 + 2 * d / 3, y0) ;
+           recursive_draw (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h) (d / 3) (n - 1)
+         )
+         else (
+           draw_line (x0 + d / 6, y0 + (y1 - y0) / 3) (x0 + d / 3, y0 + 2 * (y1 - y0) / 3) ;
+           set_color black ;
+           draw_line (,) (,) ;
+           draw_line (,) (,) ;
+           recursive_draw (,) (,) 
+         ) 
+       )
+  in recursive_draw (x, y) (x + d, y) d n
 ;;
 
-koch_curve 100 ;;
+(* draw_line (100, 200) (600, 200) ;; *)
+koch_curve (100, 300) 500 3;;
+clear_graph() ;;
