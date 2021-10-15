@@ -189,43 +189,34 @@ fleche (200, 200) 50 1 "up" ;;
 (* 2.3.3 koch_curve is a recursive function that draws a curve of von Koch of length d and order n. *)
 
 
-let koch_curve (x, y) d n =
+let koch_curve d n =
   clear_graph() ;
-  let rec recursive_draw (x0, y0) (x1, y1) d n =
-    let h = ((sqrt 3.) /. 2.) *. (float_of_int d) /. 3.
-    in match n with
-         n when n < 0 -> invalid_arg "koch_curve: n must be positive."
-       | 0 -> (
-         set_color black ;
-         draw_line (x0, y0) (x1, y1) ;
-         set_color white ;
-         draw_line (x0 + d / 3, y0) (x0 + 2 * d / 3, y0) ;
-         set_color black ;
-         draw_line (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h);
-         draw_line (x0 + d / 2, y0 + int_of_float h) (x0 + 2 * d / 3, y0)
-       )
-       | n -> (
-         set_color black ;
-         draw_line (x0, y0) (x1, y1);
-         set_color blue ;
-         if y0 = y1 then (
-           draw_line (x0 + d / 3, y0) (x0 + 2 * d / 3, y1) ;
-           set_color black ;
-           draw_line (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h) ;
-           draw_line (x0 + d / 2, y0 + int_of_float h) (x0 + 2 * d / 3, y0) ;
-           recursive_draw (x0 + d / 3, y0) (x0 + d / 2, y0 + int_of_float h) (d / 3) (n - 1)
-         )
-         else (
-           draw_line (x0 + d / 6, y0 + (y1 - y0) / 3) (x0 + d / 3, y0 + 2 * (y1 - y0) / 3) ;
-           set_color black ;
-           draw_line (,) (,) ;
-           draw_line (,) (,) ;
-           recursive_draw (,) (,) 
-         ) 
-       )
-  in recursive_draw (x, y) (x + d, y) d n
+  let (x0, y0) = (200, 200)
+  in let (x1, y1) = (x0 + d, 200)
+     in draw_line (x0, y0) (x1, y1) ;
+        let rec draw_rec (x0, y0) (x1, y1) d i=
+          if i = 0 then (
+            set_color black ;
+            draw_line (x0, y0) (x1, y1)
+          )
+          else (
+            set_color black ;
+            (*draw_line (x0, y0) (x1, y1) ;*)
+            let r = float_of_int(d / 3)
+            in let new_X = r *. cos(float_of_int(n - i + 1) *. 60. *. Float.pi /. 180.)
+               and new_Y = r *. sin(float_of_int(n - i + 1) *. 60. *. Float.pi /. 180.)
+               and new_O = r *. cos(float_of_int(n - i) *. 60. *. Float.pi /. 180.)
+               and new_O2 = float_of_int(2 * d / 3) *. cos(float_of_int(n - i) *. 60. *. Float.pi /. 180.)
+               and new_OY2 =  float_of_int(2 * d / 3) *. sin(float_of_int(n - i) *. 60. *. Float.pi /. 180.)
+               and new_OY = r *. sin(float_of_int(n - i) *. 60. *. Float.pi /. 180.)
+               in draw_line (x0 + int_of_float new_O, y0 + int_of_float new_OY) (x0 + int_of_float new_O + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) ;
+                  draw_line (x0 + int_of_float new_O + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) (x0 + int_of_float new_O2, y0 + int_of_float new_OY2) ; 
+                  draw_rec (x0 + int_of_float new_O, y0 + int_of_float new_OY) (x0 + int_of_float new_O + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) (d / 3) (i - 1)
+          )
+        in draw_rec (x0, y0) (x1, y1) d n
 ;;
 
-(* draw_line (100, 200) (600, 200) ;; *)
-koch_curve (100, 300) 500 3;;
-clear_graph() ;;
+
+koch_curve 500 4;;
+
+(*draw_line (100, 100) (50, 100) ;;*)
