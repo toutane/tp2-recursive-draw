@@ -188,45 +188,12 @@ fleche (200, 200) 50 1 "up" ;;
 
 (* 2.3.3 koch_curve is a recursive function that draws a curve of von Koch of length d and order n. *)
 
-
-let koch_curve d n =
-  clear_graph() ;
-  let (x0, y0) = (100, 200)
-  in let (x1, y1) = (x0 + d, 200)
-                  
-     in let draw (x0, y0) (x1, y1) d i new_X new_Y new_OX new_OY=
-          set_color black ;
-          (*draw_line (x0, y0) (x1, y1) ;*)
-          set_color blue ;
-          draw_line (x0 + int_of_float new_OX, y0 + int_of_float new_OY) (x0 + int_of_float new_OX + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) ;
-          set_color red ;
-          draw_line (x0 + int_of_float (2. *. new_OX), y0 + int_of_float (2. *. new_OY)) (x0 + int_of_float new_OX + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y);
-          
-        in let rec draw_rec (x0, y0) (x1, y1) d i a=
-             let r = float_of_int (d / 3)
-             in let new_X = r *. cos(float_of_int(n - i + 1) *. (a *. 60.) *. Float.pi /. 180.)
-                and new_Y = r *. sin(float_of_int(n - i + 1) *. (a *. 60.) *. Float.pi /. 180.)
-                and new_OX = r *. cos(float_of_int(n - i) *. (a *. 60.) *. Float.pi /. 180.)
-                and new_OY = r *. sin(float_of_int(n - i) *. (a *. 60.) *. Float.pi /. 180.)
-                in if i = 1 then (
-                     draw (x0, y0) (x1, y1) d i new_X new_Y new_OX new_OY
-                   )
-                   else (
-                     draw (x0, y0) (x1, y1) d i new_X new_Y new_OX new_OY;
-                     draw_rec (x0 + int_of_float new_OX, y0 + int_of_float new_OY) (x0 + int_of_float new_OX + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) (d / 3) (i - 1) 1.;
-                     draw_rec (x0 + int_of_float new_OX + int_of_float new_X, y0 + int_of_float new_OY + int_of_float new_Y) (x0 + int_of_float (2. *. new_OX), y0 + int_of_float (2. *. new_OY)) (d / 3) (i - 1) (-1.)
-                   )
-           in draw_rec (x0, y0) (x1, y1) d n 1.
-;;
-
-koch_curve 400 2;;
-
 let draw_line_float (x, y) (z, t) =
   moveto (int_of_float x) (int_of_float y) ;
   lineto (int_of_float z) (int_of_float t)
  ;;
 
-let koch_curve2 d n =
+let koch_curve d n =
   clear_graph() ;
   set_color black ;
   let (x0, y0) = (100., 200.)
@@ -250,7 +217,4 @@ let koch_curve2 d n =
      in draw_curve (x0, y0) (x1, y1) n 0.
 ;;
  
-koch_curve2 800 4 ;;
-
-  
-(*draw_line (100, 100) (50, 100) ;;*)
+koch_curve 800 4 ;;
