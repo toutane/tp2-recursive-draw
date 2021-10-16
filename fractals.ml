@@ -191,30 +191,36 @@ fleche (200, 200) 50 1 "up" ;;
 let draw_line_float (x, y) (z, t) =
   moveto (int_of_float x) (int_of_float y) ;
   lineto (int_of_float z) (int_of_float t)
- ;;
+;;
 
 let koch_curve d n =
-  clear_graph() ;
-  set_color black ;
-  let (x0, y0) = (100., 200.)
-  and (x1, y1) = (100. +. float_of_int d, 200.)
-  and deg_to_rad = Float.pi /. 180.
-  in let rec draw_curve (sX, sY) (eX, eY) i a =
-       let len = (eX -. sX) /. cos(a *. deg_to_rad) /. 3.
-       in let pX = sX +. len *. cos(a *. deg_to_rad)
-          and pY = sY +. len *. sin(a *. deg_to_rad)
-          in let qX = pX +. len *. cos((a +. 60.) *. deg_to_rad)
-             and qY = pY +. len *. sin((a +. 60.) *. deg_to_rad)
-             in let rX = qX +. len *. cos((a -. 60.) *. deg_to_rad)
-                and rY = qY +. len *. sin((a -. 60.) *. deg_to_rad)
-                in if i = 0 then draw_line_float (sX, sY) (eX, eY)
-                   else (
-                     draw_curve (sX, sY) (pX, pY) (i - 1) (a +. 0.) ;
-                     draw_curve (pX, pY) (qX, qY) (i - 1) (a +. 60.) ;
-                     draw_curve (qX, qY) (rX, rY) (i - 1) (a -. 60.) ;
-                     draw_curve (rX, rY) (eX, eY) (i - 1) (a +. 0.) ;
-                   )
-     in draw_curve (x0, y0) (x1, y1) n 0.
+  if d <= 0 then invalid_arg "koch_curve: The length of the starting segment much be positive."
+  else (
+    if n < 0 then invalid_arg "koch_curve: The rank of the curve must be positibe."
+    else (
+      clear_graph() ;
+      set_color black ;
+      let (x0, y0) = (150., 200.)
+      and (x1, y1) = (100. +. float_of_int d, 200.)
+      and deg_to_rad = Float.pi /. 180.
+      in let rec draw_curve (sX, sY) (eX, eY) i a =
+           let len = (eX -. sX) /. cos(a *. deg_to_rad) /. 3.
+           in let pX = sX +. len *. cos(a *. deg_to_rad)
+              and pY = sY +. len *. sin(a *. deg_to_rad)
+              in let qX = pX +. len *. cos((a +. 60.) *. deg_to_rad)
+                 and qY = pY +. len *. sin((a +. 60.) *. deg_to_rad)
+                 in let rX = qX +. len *. cos((a -. 60.) *. deg_to_rad)
+                    and rY = qY +. len *. sin((a -. 60.) *. deg_to_rad)
+                    in if i = 0 then draw_line_float (sX, sY) (eX, eY)
+                       else (
+                         draw_curve (sX, sY) (pX, pY) (i - 1) (a +. 0.) ;
+                         draw_curve (pX, pY) (qX, qY) (i - 1) (a +. 60.) ;
+                         draw_curve (qX, qY) (rX, rY) (i - 1) (a -. 60.) ;
+                         draw_curve (rX, rY) (eX, eY) (i - 1) (a +. 0.) ;
+                       )
+         in draw_curve (x0, y0) (x1, y1) n 0.
+    )
+  )
 ;;
  
-koch_curve 800 4 ;;
+koch_curve 500 5 ;;
