@@ -226,7 +226,7 @@ let koch_curve d n =
   )
 ;;
 
-koch_curve 500 3 ;;
+koch_curve 500 5 ;;
 
 let koch_snowflake n =
   if n < 0 then invalid_arg "koch_snowflake: The rank of the snowflake must be positive"
@@ -245,4 +245,37 @@ let koch_snowflake n =
   )
 ;;
 
-koch_snowflake 6 ;;
+koch_snowflake 4 ;;
+
+let vicsek_star n =
+  if n < 0 then invalid_arg "vicsek_star: The rank of the star must be positive"
+  else (
+    clear_graph() ;
+    set_color black ;
+    let (x0, y0) = (200, 200)
+    and len = 300
+    in let rec draw_star (x, y) i len =
+         let c = len / 3
+         in let (x1, y1) = (x, y)
+            and (x2, y2) = ((x + c), (y + c))
+            and (x3, y3) = ((x + 2 * c), (y + 2 * c))
+                in if i = 0 then (
+                 set_color black ;
+                 fill_rect x1 y1 c c ;
+                 fill_rect x2 y2 c c ;
+                 fill_rect x3 y3 c c ;
+                 fill_rect x1 y3 c c ;
+                 fill_rect x3 y1 c c
+               )
+               else (
+                 draw_star (x1, y1) (i - 1) c ;
+                 draw_star (x2, y2) (i - 1) c ;
+                 draw_star (x3, y3) (i - 1) c ;
+                 draw_star (x1, y3) (i - 1) c ;
+                 draw_star (x3, y1) (i - 1) c
+               )
+       in draw_star (x0, y0) n len
+  )
+;;
+
+vicsek_star 3 ;;
