@@ -308,3 +308,49 @@ let vicsek_cross n =
 ;;
 
 vicsek_cross 3 ;;
+
+open Complex ;;
+
+let mandelbrot =
+  clear_graph() ;
+  let xmin = (-2.)
+  and ymin = (-2.)
+  and xmax = 2.
+  and ymax = 2.
+  and width = 1000.
+  and height = 1000.
+  and iterations = 200
+  and contrast = 5
+  in let set_plot_color z =
+       let rec suite v i =
+         if i > iterations then i
+         else (
+           if Complex.norm v > 2. then (
+             (*print_float (Complex.norm v) ;*)
+             i
+           )
+           else (
+             suite (Complex.add (Complex.mul v v) z) (i + 1)
+           )
+         )
+       in let n = suite Complex.zero 0
+          in if n > iterations then set_color (rgb 147 112 219) 
+             else set_color (rgb (230 - contrast * n) (232 - contrast * n) (250 - contrast * n))
+     in let rec draw_line py =
+          if py < (int_of_float height) then (
+            let y = ((float_of_int py) /. height *. (ymax -. ymin) +. ymin)
+            in let rec draw_plot px =
+                 if px < (int_of_float width) then (
+                   let x = ((float_of_int px) /. width *. (xmax -. xmin) +. xmin)
+                   in let z = {re = x; im = y}
+                      in set_plot_color z ;
+                         plot px py ;
+                         draw_plot (px + 1)
+                 )
+                 else ()
+               in draw_plot 0 ;
+                  draw_line (py + 1)
+          )
+          else ()
+        in draw_line 0
+;;
