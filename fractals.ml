@@ -307,7 +307,7 @@ let vicsek_cross n =
   )
 ;;
 
-vicsek_cross 3 ;;
+vicsek_cross 5 ;;
 
 open Complex ;;
 
@@ -317,8 +317,8 @@ let mandelbrot =
   and ymin = (-2.)
   and xmax = 2.
   and ymax = 2.
-  and width = 1000.
-  and height = 1000.
+  and width = 500.
+  and height = 500.
   and iterations = 200
   and contrast = 5
   in let set_plot_color z =
@@ -347,10 +347,8 @@ let mandelbrot =
                          plot px py ;
                          draw_plot (px + 1)
                  )
-                 else ()
                in draw_plot 0 ;
                   draw_line (py + 1)
           )
-          else ()
         in draw_line 0
 ;;
