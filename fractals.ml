@@ -183,18 +183,18 @@ let fleche (ox, oy) rad n direction =
   in repeat_draw (ox, oy) rad direction
 ;;
 
-fleche (200, 200) 50 1 "up" ;;
+(*fleche (200, 200) 50 1 "up" ;;*)
 
-
-(* 2.3.3 koch_curve is a recursive function that draws a curve of von Koch of length d and order n. *)
-
+(* draw_line_float function draws a line from (x, y) to (z, t) and takes float numbers. *)
 let draw_line_float (x, y) (z, t) =
   moveto (int_of_float x) (int_of_float y) ;
   lineto (int_of_float z) (int_of_float t)
 ;;
 
+(* deg_to_rad converts a degre in radian. *)
 let deg_to_rad = Float.pi /. 180. ;;
 
+(* draw_koch_curve function draws a curve of Koch of length d from (sX, sY). *) 
 let rec draw_koch_curve (sX, sY) (eX, eY) i a d =
   let len = (eX -. sX) /. cos(a *. deg_to_rad) /. 3.
   in let pX = sX +. len *. cos(a *. deg_to_rad)
@@ -212,6 +212,7 @@ let rec draw_koch_curve (sX, sY) (eX, eY) i a d =
               )
 ;;
 
+(* koch_curve function draws a curve of Koch of length d and rank n.*)
 let koch_curve d n =
   if d <= 0 then invalid_arg "koch_curve: The length of the starting segment much be positive."
   else (
@@ -226,8 +227,9 @@ let koch_curve d n =
   )
 ;;
 
-koch_curve 500 5 ;;
+(*koch_curve 500 5 ;;*)
 
+(* koch_snowflake function draws a snowflake of Koch of rank n. *)
 let koch_snowflake n =
   if n < 0 then invalid_arg "koch_snowflake: The rank of the snowflake must be positive"
   else (
@@ -245,8 +247,9 @@ let koch_snowflake n =
   )
 ;;
 
-koch_snowflake 4 ;;
+(*koch_snowflake 4 ;;*)
 
+(* vicsek_star function draws a star of Vicsek of rank n. *)
 let vicsek_star n =
   if n < 0 then invalid_arg "vicsek_star: The rank of the star must be positive"
   else (
@@ -255,7 +258,7 @@ let vicsek_star n =
     let (x0, y0) = (200, 200)
     and len = 300
     in let rec draw_star (x, y) i len =
-         let c = len / 3
+          let c = len / 3
          in let (x2, y2) = ((x + c), (y + c))
             and (x3, y3) = ((x + 2 * c), (y + 2 * c))
             in if i = 0 then (
@@ -276,8 +279,9 @@ let vicsek_star n =
   )
 ;;
 
-vicsek_star 3 ;;
+(*vicsek_star 3 ;;*)
 
+(* vicsek_cross function draws a cross of Vicsek of rank n. *)
 let vicsek_cross n =
   if n < 0 then invalid_arg "vicsek_cross: The rank of the cross must be positibe."
   else (
@@ -307,10 +311,12 @@ let vicsek_cross n =
   )
 ;;
 
-vicsek_cross 5 ;;
+(*vicsek_cross 5 ;;*)
 
+(* Opens the Complex module that we use for the mandelbrot function. *)
 open Complex ;;
 
+(* mandelbrot function draws the mandelbrot set. *)
 let mandelbrot =
   clear_graph() ;
   let xmin = (-2.)
@@ -321,12 +327,11 @@ let mandelbrot =
   and height = 500.
   and iterations = 200
   and contrast = 5
-  in let set_plot_color z =
+  in let set_plot_color z = (* Set the color of each point.*)
        let rec suite v i =
          if i > iterations then i
          else (
            if Complex.norm v > 2. then (
-             (*print_float (Complex.norm v) ;*)
              i
            )
            else (
@@ -336,10 +341,10 @@ let mandelbrot =
        in let n = suite Complex.zero 0
           in if n > iterations then set_color (rgb 147 112 219) 
              else set_color (rgb (230 - contrast * n) (232 - contrast * n) (250 - contrast * n))
-     in let rec draw_line py =
+     in let rec draw_line py = (* Draws each line. *)
           if py < (int_of_float height) then (
             let y = ((float_of_int py) /. height *. (ymax -. ymin) +. ymin)
-            in let rec draw_plot px =
+            in let rec draw_plot px = (* Draws each point of the line. *)
                  if px < (int_of_float width) then (
                    let x = ((float_of_int px) /. width *. (xmax -. xmin) +. xmin)
                    in let z = {re = x; im = y}
