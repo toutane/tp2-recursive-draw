@@ -12,180 +12,204 @@ Random.init 1 ;;
 open Graphics ;;
 
 (* Show the graphics window *)
-open_graph " 300x300" ;;
+open_graph " 1000x1000" ;;
 
 (* draw_line function draws a line from point (x, y) to point (z, t) *)
-
 let draw_line (x, y) (z, t) =
-  (*set_line_width 1 ;*)
-  (*set_color black ;*)
   moveto x y ;
   lineto z t
 ;;
 
 
 (* 2.1.1 mountain function draws a mountain of n sides from point p1 to point p2 *)
-
-let mountain n p1 p2 =
-  clear_graph() ;
-  let rec draw_mountain c p1 p2 =
-    if c = 1 then draw_line p1 p2
-    else (
-      let (x, y) = p1 and (z, t) = p2
-      in let h = (y + t) / 2 + Random.int(abs(z - x)/5 + 20)
-         in let m = ((x + z) / 2, h)
-            in (
-                draw_mountain (c - 1) p1  m ;
-                draw_mountain (c - 1) m p2
-              )
-    )
-  in draw_mountain n p1 p2
+let mountain n p q =
+  if n <= 0 then invalid_arg "mountain: The rank of the mountain must be positive."
+  else (
+    clear_graph() ;
+    set_color black ;
+    let rec draw_mountain i p q =
+      if i = 0 then draw_line p q
+      else (
+        let (x, y) = p
+        and (z, t) = q
+        in let h = (y + t) / 2 + Random.int(abs(z - x)/5 + 20)
+           in let m = ((x + z) / 2, h)
+              in draw_mountain (i - 1) p  m ;
+                 draw_mountain (i - 1) m q                
+      )
+    in draw_mountain n p q
+  )
 ;;
 
-mountain 10 (0, 100) (400, 100) ;;
-
+(* mountain 8 (100, 300) (500, 300) ;; *)
 
 (* 2.1.2 dragon function draws a dragon *)
-
-let dragon n p1 p2 =
-  clear_graph() ;
-  let rec draw_dragon c p1 p2 =
-    if c = n then draw_line p1 p2
-    else (
-      let (x, y) = p1 and (z, t) = p2
-      in let u = ((x + z) / 2 + (t - y) / 2) and v = ((y + t) / 2 - (z - x) / 2)
-         in (
-             draw_dragon (c + 1) p1 (u, v) ;
-             draw_dragon (c + 1) p2 (u, v)
-           )
-    )
-  in draw_dragon 0 p1 p2
+let dragon n p q =
+  if n <= 0 then invalid_arg "dragon: The rank of the dragon must be positive."
+  else (
+    clear_graph() ;
+    set_color red ;
+    let rec draw_dragon i p q =
+      if i = 0 then draw_line p q
+      else (
+        let (x, y) = p
+        and (z, t) = q
+        in let u = ((x + z) / 2 + (t - y) / 2)
+           and v = ((y + t) / 2 - (z - x) / 2)
+           in draw_dragon (i - 1) p (u, v) ;
+              draw_dragon (i - 1) q (u, v)
+      )
+    in draw_dragon n p q
+  )
 ;;
 
-dragon 19 (150 ,150) (350 ,350) ;;
+(* dragon 19 (150 ,150) (350 ,350) ;; *)
 
+(* 2.2 Les surfaces *)
 
 (* 2.2.1 sierpinski_sponge function draws a sponge of sierpinski *)
-
-let sierpinski_sponge (x, y) n =
-  clear_graph() ;
-  let rec draw_sponge c (x, y) =
-    let tiere = c / 3
-    in if c < 9 then (
-         set_color black ;
-         fill_rect x y c c ;
-         set_color white ;
-         fill_rect (x + tiere) (y + tiere) tiere tiere
-       )
-       else (
-         set_color black ;
-         fill_rect x y c c ;
-         set_color white ;
-         fill_rect (x + tiere) (y + tiere) tiere tiere ;
-         draw_sponge tiere (x, y) ;
-         draw_sponge tiere ((x + tiere), y) ;
-         draw_sponge tiere ((x + 2 * tiere), y) ;
-         draw_sponge tiere (x, (y + tiere)) ;
-         draw_sponge tiere (x, (y + 2 * tiere)) ;
-         draw_sponge tiere ((x + tiere), (y + 2 * tiere)) ;
-         draw_sponge tiere ((x + 2 * tiere), (y + 2 * tiere)) ;
-         draw_sponge tiere ((x + 2 * tiere), (y + tiere))
-       )
-  in draw_sponge n (x, y)
+let sierpinski_sponge (x, y) width =
+  if width <= 0 then invalid_arg "sierpinski_sponge: The width of the sponge must be positive"
+  else (
+    if x < 0 || y < 0 then invalid_arg "sierpinski_sponge: The coordonates of the origin must be positives."
+    else (
+      clear_graph() ;
+      let rec draw_sponge w (x, y) =
+        let tiere = w / 3
+        in if w < 9 then (
+             set_color black ;
+             fill_rect x y w w ;
+             set_color white ;
+             fill_rect (x + tiere) (y + tiere) tiere tiere
+           )
+           else (
+             set_color black ;
+             fill_rect x y w w ;
+             set_color white ;
+             fill_rect (x + tiere) (y + tiere) tiere tiere ;
+             draw_sponge tiere (x, y) ;
+             draw_sponge tiere ((x + tiere), y) ;
+             draw_sponge tiere ((x + 2 * tiere), y) ;
+             draw_sponge tiere (x, (y + tiere)) ;
+             draw_sponge tiere (x, (y + 2 * tiere)) ;
+             draw_sponge tiere ((x + tiere), (y + 2 * tiere)) ;
+             draw_sponge tiere ((x + 2 * tiere), (y + 2 * tiere)) ;
+             draw_sponge tiere ((x + 2 * tiere), (y + tiere))
+           )
+      in draw_sponge width (x, y)
+    )
+  )
 ;;
 
-sierpinski_sponge (50, 50) 500 ;;
+(* sierpinski_sponge (50, 50) 500 ;; *)
 
-
-(* sierpinski_triangle function draws a triangle of sierpinski *)
-
-let sierpinski_triangle n (x1, y1) (x2, y2) (x3, y3) =
-  clear_graph() ;
-  let rec draw_triangle c (x1, y1) (x2, y2) (x3, y3) =
-    let x_mid = (x2 - x1) / 2 + x1 and y_mid = (y3 - y1) / 2 + y1
-    in if c = n then (
-         set_color black ;
-         fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
-         set_color white ;
-         fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|]
-       )
-       else (
-         set_color black ;
-         fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
-         set_color white ;
-         fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|] ;
-         draw_triangle (c + 1) (x1, y1) (x_mid, y1) ((x_mid - x1) / 2 + x1, y_mid) ;
-         draw_triangle (c + 1) (x_mid, y1) (x2, y2) ((x2 - x_mid) / 2 + x_mid, y_mid) ;
-         draw_triangle (c + 1) ((x_mid - x1) / 2 + x1, y_mid) ((x2 - x_mid) / 2 + x_mid, y_mid) (x3, y3)
-       )
-     in draw_triangle 1 (x1, y1) (x2, y2) (x3, y3)
+(* sierpinski_triangle function draws a triangle of sierpinski of rank n.*)
+let sierpinski_triangle n =
+  if n <= 0 then invalid_arg "sierpinski_triangle: The rank of the triangle must be positive."
+  else (
+    clear_graph() ;
+    let (x1, y1) = (100, 50)
+    and (x2, y2) = (500, 50)
+    and (x3, y3) = (300, 346)
+    in let rec draw_triangle c (x1, y1) (x2, y2) (x3, y3) =
+         let x_mid = (x2 - x1) / 2 + x1 and y_mid = (y3 - y1) / 2 + y1
+         in if c = n then (
+              set_color blue ;
+              fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
+              set_color white ;
+              fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|]
+            )
+            else (
+              set_color blue ;
+              fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
+              set_color white ;
+              fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|] ;
+              draw_triangle (c + 1) (x1, y1) (x_mid, y1) ((x_mid - x1) / 2 + x1, y_mid) ;
+              draw_triangle (c + 1) (x_mid, y1) (x2, y2) ((x2 - x_mid) / 2 + x_mid, y_mid) ;
+              draw_triangle (c + 1) ((x_mid - x1) / 2 + x1, y_mid) ((x2 - x_mid) / 2 + x_mid, y_mid) (x3, y3)
+            )
+       in draw_triangle 1 (x1, y1) (x2, y2) (x3, y3)
+  )
 ;;
 
-sierpinski_triangle 5 (100, 50) (500, 50) (300, 346) ;;
-
+(* sierpinski_triangle 5 ;; *)
 
 (* 2.3 Bonuses *)
 
-(* 2.3.1 Circles function draws  *)
-
-let circles (x, y) r r_limit =
-  let rec rec_circles (x, y) r =
-    let demi_r = r / 2
-    in if demi_r < r_limit then draw_circle x y r
-       else (
-         draw_circle x y r ;
-         rec_circles ((x + demi_r), y) demi_r ;
-         rec_circles ((x - demi_r), y) demi_r
-       )
-  in  rec_circles (x, y) r
-;;
-
-circles (100, 100) 100 5 ;;
-
-(* 2.3.1 Fleche function draws a fleche of radius r *)
-
-let fleche (ox, oy) rad n direction =
-  clear_graph() ;
-  set_color black ;
-  let rec repeat_draw (x, y) rad direction =
-    if (rad / 2) < n then (
-      fill_circle x y rad
-    )
+(* 2.3.1 circles function draws a figure of a circle contening n other circles. *)
+let circles (x, y) rad =
+  if rad <= 0 then invalid_arg "circles: The radius must be positive."
+  else (
+    if x < 0 || y < 0 then invalid_arg "circles: The coordinates of the origin must be positives."
     else (
-      fill_circle x y rad ;
-      let new_rad = rad / 2
-      in let coords_left = ((x - rad) - new_rad, y)
-             and coords_right = ((x + rad) + new_rad, y)
-             and coords_up = (x, ((y + rad) + new_rad))
-             and coords_down = (x, ((y - rad) - new_rad))
-         in match direction with
-           "up" -> (
-           repeat_draw coords_left new_rad "left" ;
-           repeat_draw coords_right new_rad "right";
-           repeat_draw coords_up new_rad "up"
-         )
-         | "left" -> (
-           repeat_draw coords_left new_rad "left";
-           repeat_draw coords_up new_rad "up" ;
-           repeat_draw coords_down new_rad "down"
-         )
-         | "right" -> (
-           repeat_draw coords_right new_rad "right" ;
-           repeat_draw coords_up new_rad "up" ;
-           repeat_draw coords_down new_rad "down"
-         )
-         | _ -> (
-           repeat_draw coords_left new_rad "left" ;
-           repeat_draw coords_right new_rad "right" ;
-           repeat_draw coords_down new_rad "down"
-             )
-         )
-  in repeat_draw (ox, oy) rad direction
+      let limit = 5
+      in clear_graph() ;
+         let rec rec_circles (x, y) rad =
+           let demi_rad = rad / 2
+           in if demi_rad < limit then draw_circle x y rad
+              else (
+                draw_circle x y rad ;
+                rec_circles ((x + demi_rad), y) demi_rad ;
+                rec_circles ((x - demi_rad), y) demi_rad
+              )
+         in  rec_circles (x, y) rad
+    )
+  )
 ;;
 
-(*fleche (200, 200) 50 1 "up" ;;*)
+(* circles (100, 100) 100 ;; *)
 
-(* draw_line_float function draws a line from (x, y) to (z, t) and takes float numbers. *)
+(* 2.3.1 arrow function draws a arrow of radius r *)
+let arrow (ox, oy) rad =
+  if rad <= 0 then invalid_arg "arrow: The radius of the arrow must be positive."
+  else (
+    if ox < 0 || oy < 0 then invalid_arg "arrow: The coordinates of the origin must be positives."
+    else (
+      let limit = 2 (* We set the radius from which we stop the recursion. *)
+      and direction = "up" (* We set the starting direction of the arrow to "up".*)
+      in clear_graph() ;
+         set_color black ;
+         let rec repeat_draw (x, y) rad direction =
+           if (rad / 2) < limit then (
+             fill_circle x y rad
+           )
+           else (
+             fill_circle x y rad ;
+             let new_rad = rad / 2
+             in let coords_left = ((x - rad) - new_rad, y)
+                and coords_right = ((x + rad) + new_rad, y)
+                and coords_up = (x, ((y + rad) + new_rad))
+                and coords_down = (x, ((y - rad) - new_rad))
+                in match direction with
+                     "up" -> (
+                     repeat_draw coords_left new_rad "left" ;
+                     repeat_draw coords_right new_rad "right";
+                     repeat_draw coords_up new_rad "up"
+                   )
+                   | "left" -> (
+                     repeat_draw coords_left new_rad "left";
+                     repeat_draw coords_up new_rad "up" ;
+                     repeat_draw coords_down new_rad "down"
+                   )
+                   | "right" -> (
+                     repeat_draw coords_right new_rad "right" ;
+                     repeat_draw coords_up new_rad "up" ;
+                     repeat_draw coords_down new_rad "down"
+                   )
+                   | _ -> (
+                     repeat_draw coords_left new_rad "left" ;
+                     repeat_draw coords_right new_rad "right" ;
+                     repeat_draw coords_down new_rad "down"
+                   )
+           )
+         in repeat_draw (ox, oy) rad direction
+    )
+  )
+;;
+
+(* arrow (200, 200) 50 ;; *)
+
+(* draw_line_float function draws a line from (x, y) to (z, t) and takes float numbers in parameter. *)
 let draw_line_float (x, y) (z, t) =
   moveto (int_of_float x) (int_of_float y) ;
   lineto (int_of_float z) (int_of_float t)
@@ -212,7 +236,7 @@ let rec draw_koch_curve (sX, sY) (eX, eY) i a d =
               )
 ;;
 
-(* koch_curve function draws a curve of Koch of length d and rank n.*)
+(* 2.3.3 koch_curve function draws a curve of Koch of length d and rank n.*)
 let koch_curve d n =
   if d <= 0 then invalid_arg "koch_curve: The length of the starting segment much be positive."
   else (
@@ -227,9 +251,9 @@ let koch_curve d n =
   )
 ;;
 
-(*koch_curve 500 5 ;;*)
+(* koch_curve 500 5 ;; *)
 
-(* koch_snowflake function draws a snowflake of Koch of rank n. *)
+(* 2.3.3 koch_snowflake function draws a snowflake of Koch of rank n. *)
 let koch_snowflake n =
   if n < 0 then invalid_arg "koch_snowflake: The rank of the snowflake must be positive"
   else (
@@ -247,9 +271,9 @@ let koch_snowflake n =
   )
 ;;
 
-(*koch_snowflake 4 ;;*)
+(* koch_snowflake 4 ;;*)
 
-(* vicsek_star function draws a star of Vicsek of rank n. *)
+(* 2.3.4 vicsek_star function draws a star of Vicsek of rank n. *)
 let vicsek_star n =
   if n < 0 then invalid_arg "vicsek_star: The rank of the star must be positive"
   else (
@@ -279,9 +303,9 @@ let vicsek_star n =
   )
 ;;
 
-(*vicsek_star 3 ;;*)
+(* vicsek_star 3 ;; *)
 
-(* vicsek_cross function draws a cross of Vicsek of rank n. *)
+(* 2.3.4 vicsek_cross function draws a cross of Vicsek of rank n. *)
 let vicsek_cross n =
   if n < 0 then invalid_arg "vicsek_cross: The rank of the cross must be positibe."
   else (
@@ -316,7 +340,7 @@ let vicsek_cross n =
 (* Opens the Complex module that we use for the mandelbrot function. *)
 open Complex ;;
 
-(* mandelbrot function draws the mandelbrot set. *)
+(* 2.3.5 mandelbrot function draws the mandelbrot set. *)
 let mandelbrot =
   clear_graph() ;
   let xmin = (-2.)
