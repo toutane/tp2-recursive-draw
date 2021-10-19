@@ -1,17 +1,15 @@
-(* Initialize the random generator *)
+(* Charles-Antoine Leger - E2 - TP2 *)
+
+(* Initializes the random generator *)
 Random.init 1 ;;
 
-(* Load the Graphics library *)
-
-(* Load Graphics module on OSX with ocaml 4.0.2*)
+(* Loads the Graphics library
 #load "graphics.cma"
-
-(* Load Graphics module on Linux with ocaml 4.12 *)
-(* #use "topfind" ;;
+#use "topfind" ;;
 #require "graphics" ;; *)
-open Graphics ;;
 
-(* Show the graphics window *)
+open Graphics ;;
+(* Opens the graphics screen*)
 open_graph " 1000x1000" ;;
 
 (* draw_line function draws a line from point (x, y) to point (z, t) *)
@@ -20,10 +18,9 @@ let draw_line (x, y) (z, t) =
   lineto z t
 ;;
 
-
 (* 2.1.1 mountain function draws a mountain of n sides from point p1 to point p2 *)
 let mountain n p q =
-  if n <= 0 then invalid_arg "mountain: The rank of the mountain must be positive."
+  if n < 0 then invalid_arg "mountain: The rank of the mountain must be a natural"
   else (
     clear_graph() ;
     set_color black ;
@@ -35,17 +32,17 @@ let mountain n p q =
         in let h = (y + t) / 2 + Random.int(abs(z - x)/5 + 20)
            in let m = ((x + z) / 2, h)
               in draw_mountain (i - 1) p  m ;
-                 draw_mountain (i - 1) m q                
+                 draw_mountain (i - 1) m q
       )
     in draw_mountain n p q
   )
 ;;
 
-(* mountain 8 (100, 300) (500, 300) ;; *)
+(* mountain 6 (100, 300) (500, 300) ;; *)
 
 (* 2.1.2 dragon function draws a dragon *)
 let dragon n p q =
-  if n <= 0 then invalid_arg "dragon: The rank of the dragon must be positive."
+  if n < 0 then invalid_arg "dragon: The rank of the dragon must be positive."
   else (
     clear_graph() ;
     set_color red ;
@@ -63,7 +60,7 @@ let dragon n p q =
   )
 ;;
 
-(* dragon 19 (150 ,150) (350 ,350) ;; *)
+(* dragon 19 (150, 150) (350, 350) ;; *)
 
 (* 2.2 Les surfaces *)
 
@@ -133,7 +130,7 @@ let sierpinski_triangle n =
   )
 ;;
 
-(* sierpinski_triangle 1 ;; *)
+(* sierpinski_triangle 6 ;; *)
 
 (* 2.3 Bonuses *)
 
