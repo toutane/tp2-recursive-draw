@@ -105,34 +105,35 @@ let sierpinski_sponge (x, y) width =
 
 (* sierpinski_triangle function draws a triangle of sierpinski of rank n.*)
 let sierpinski_triangle n =
-  if n <= 0 then invalid_arg "sierpinski_triangle: The rank of the triangle must be positive."
+  if n < 0 then invalid_arg "sierpinski_triangle: The rank of the triangle must be positive."
   else (
     clear_graph() ;
     let (x1, y1) = (100, 50)
     and (x2, y2) = (500, 50)
     and (x3, y3) = (300, 346)
-    in let rec draw_triangle c (x1, y1) (x2, y2) (x3, y3) =
-         let x_mid = (x2 - x1) / 2 + x1 and y_mid = (y3 - y1) / 2 + y1
-         in if c = n then (
-              set_color blue ;
-              fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
-              set_color white ;
-              fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|]
-            )
-            else (
-              set_color blue ;
-              fill_poly [|(x1, y1); (x2, y2); (x3, y3)|] ;
-              set_color white ;
-              fill_poly [|(x_mid, y1); ((x_mid - x1) / 2 + x1, y_mid); ((x2 - x_mid) / 2 + x_mid, y_mid)|] ;
-              draw_triangle (c + 1) (x1, y1) (x_mid, y1) ((x_mid - x1) / 2 + x1, y_mid) ;
-              draw_triangle (c + 1) (x_mid, y1) (x2, y2) ((x2 - x_mid) / 2 + x_mid, y_mid) ;
-              draw_triangle (c + 1) ((x_mid - x1) / 2 + x1, y_mid) ((x2 - x_mid) / 2 + x_mid, y_mid) (x3, y3)
-            )
-       in draw_triangle 1 (x1, y1) (x2, y2) (x3, y3)
+    in let draw_triangle (x1, y1) (x2, y2) (x3, y3) =
+         draw_line (x1, y1) (x2, y2) ;
+         draw_line (x1, y1) (x3, y3) ;
+         draw_line (x2, y2) (x3, y3)
+       in let rec draw c (x1, y1) (x2, y2) (x3, y3) =
+            let x_mid = (x2 - x1) / 2 + x1
+            and y_mid = (y3 - y1) / 2 + y1
+            in if c = n then (
+                 set_color blue ;
+                 draw_triangle (x1, y1) (x2, y2) (x3, y3) ;
+               )
+               else (
+                 set_color blue ;
+                 draw_triangle (x1, y1) (x2, y2) (x3, y3) ;
+                 draw (c + 1) (x1, y1) (x_mid, y1) ((x_mid - x1) / 2 + x1, y_mid) ;
+                 draw (c + 1) (x_mid, y1) (x2, y2) ((x2 - x_mid) / 2 + x_mid, y_mid) ;
+                 draw (c + 1) ((x_mid - x1) / 2 + x1, y_mid) ((x2 - x_mid) / 2 + x_mid, y_mid) (x3, y3)
+               )
+          in draw 0 (x1, y1) (x2, y2) (x3, y3)
   )
 ;;
 
-(* sierpinski_triangle 5 ;; *)
+(* sierpinski_triangle 1 ;; *)
 
 (* 2.3 Bonuses *)
 
