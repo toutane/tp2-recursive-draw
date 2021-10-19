@@ -6,3 +6,7 @@ Dans le readme :
 	Pour les fonctions qui ne sont pas en bonus, faire uniquement ce qui est demande
 	Enlever ou commenter les tests (comme les appels de nos fonctions par exemple
 	Ne pas trop faire de commentaires
+
+
+
+	ATTENTION: le readme ne doit pas avoir d'extensions !!!:
