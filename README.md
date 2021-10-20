@@ -3,7 +3,7 @@
 
 ## Loading the Graphics module
 
-In this project, we will use the [Graphics](https://ocaml.github.io/graphics/graphics/Graphics/index.html) module of Caml. This library provides a set of portable drawing primitives.
+This project use the [Graphics](https://ocaml.github.io/graphics/graphics/Graphics/index.html) module of Caml. This library provides a set of portable drawing primitives.
 
 For Caml versions up to 4.08:
 ```
